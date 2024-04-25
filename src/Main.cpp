@@ -1,4 +1,4 @@
-#include "Events.h"
+#include "EventSink.h"
 #include "Logging.h"
 #include "SKSE/Interfaces.h"
 #include "Settings.h"
@@ -9,7 +9,8 @@ void Listener(SKSE::MessagingInterface::Message* message) noexcept
         auto settings = Settings::GetSingleton();
         settings->LoadSettings();
         settings->LoadForms();
-        Events::InputSink::Register();
+        InputEventSink::Register();
+       
     }
 }
 

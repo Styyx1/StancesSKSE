@@ -157,24 +157,23 @@ using namespace REL::literals;
 
 namespace logger = SKSE::log;
 
-template <typename T>
+template <class T>
 class Singleton
 {
-protected:
-    constexpr Singleton() noexcept  = default;
-    constexpr ~Singleton() noexcept = default;
-
 public:
-    constexpr Singleton(const Singleton&)      = delete;
-    constexpr Singleton(Singleton&&)           = delete;
-    constexpr auto operator=(const Singleton&) = delete;
-    constexpr auto operator=(Singleton&&)      = delete;
-
-    [[nodiscard]] static constexpr T* GetSingleton() noexcept
+    [[nodiscard]] static T* GetSingleton()
     {
         static T singleton;
         return std::addressof(singleton);
     }
+
+    Singleton(const Singleton&)            = delete;
+    Singleton(Singleton&&)                 = delete;
+    Singleton& operator=(const Singleton&) = delete;
+    Singleton& operator=(Singleton&&)      = delete;
+
+protected:
+    Singleton() = default;
 };
 
 namespace stl

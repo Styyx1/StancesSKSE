@@ -16,7 +16,9 @@ void Settings::LoadSettings() noexcept
     high_key = std::stoi(ini.GetValue("Keys", "iHighStanceKey", "257"));
     mid_key = std::stoi(ini.GetValue("Keys", "iMidStanceKey", "258"));
     low_key = std::stoi(ini.GetValue("Keys", "iLowStanceKey", "259"));
-    mod_key = std::stoi(ini.GetValue("Keys", "iModifierKey", "260"));
+    mod_key_high = std::stoi(ini.GetValue("Keys", "iModifierKeyHighStance", "260"));
+    mod_key_mid = std::stoi(ini.GetValue("Keys", "iModifierKeyMidStance", "260"));
+    mod_key_low = std::stoi(ini.GetValue("Keys", "iModifierKeyLowStance", "260"));
 
 
 
