@@ -2,19 +2,15 @@
 
 #include "PCH.h"
 
-
 class EventManager final : public Singleton<EventManager>
 {
     friend class Singleton<EventManager>;
 
 public:
-    static bool             IsPermanent(RE::MagicItem* item);
-    static void             ApplySpell(RE::Actor* caster, RE::Actor* target, RE::SpellItem* spell);
-    static void             ApplyStance(RE::SpellItem* a_spell);
-
+    static bool IsPermanent(RE::MagicItem* item);
+    static void ApplySpell(RE::Actor* caster, RE::Actor* target, RE::SpellItem* spell);
+    static void ApplyStance(RE::SpellItem* a_spell);
 
 private:
     EventManager() = default;
-
-
 };

@@ -3,7 +3,6 @@
 #include "EventManager.h"
 #include "PCH.h"
 
-
 namespace
 {
     inline std::uint32_t RemapKey(std::uint32_t a_key, RE::INPUT_DEVICE a_device)
@@ -106,26 +105,22 @@ namespace
         KeyCombo hotkey_mid;
         KeyCombo hotkey_low;
     };
-}
+} // namespace
 
-    void HotkeyManager::Process(const RE::InputEvent* const* a_event)
+void HotkeyManager::Process(const RE::InputEvent* const* a_event)
 
-    {
-        const auto settings = Settings::GetSingleton();
+{
+    const auto settings = Settings::GetSingleton();
 
-        HotkeyContext ctx{ settings };
+    HotkeyContext ctx{ settings };
 
-        for (auto event = *a_event; event; event = event->next) {
-            if (auto button = event->AsButtonEvent()) {
-                ctx.Update(button);
-            }
+    for (auto event = *a_event; event; event = event->next) {
+        if (auto button = event->AsButtonEvent()) {
+            ctx.Update(button);
         }
-
-        auto input = EventManager::GetSingleton();
-
-        ctx.Finalize(input);
     }
 
+    auto input = EventManager::GetSingleton();
 
-
-
+    ctx.Finalize(input);
+}

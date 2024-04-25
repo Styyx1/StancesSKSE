@@ -10,7 +10,6 @@ void Listener(SKSE::MessagingInterface::Message* message) noexcept
         settings->LoadSettings();
         settings->LoadForms();
         InputEventSink::Register();
-       
     }
 }
 
