@@ -6,7 +6,7 @@ void Settings::LoadSettings() noexcept
 
     CSimpleIniA ini;
     ini.SetUnicode();
-    ini.LoadFile(R"(.\Data\SKSE\Plugins\StancesReborn.ini)");    
+    ini.LoadFile(R"(.\Data\SKSE\Plugins\StancesReborn.ini)");
 
     std::string fileName(ini.GetValue("General", "sModFileName", ""));
     std::string high_stance_spell_ID(ini.GetValue("FormID", "HighStanceSpellFormID", ""));
@@ -14,13 +14,11 @@ void Settings::LoadSettings() noexcept
     std::string low_stance_spell_ID(ini.GetValue("FormID", "LowStanceSpellFormID", ""));
 
     high_key = std::stoi(ini.GetValue("Keys", "iHighStanceKey", "257"));
-    mid_key = std::stoi(ini.GetValue("Keys", "iMidStanceKey", "258"));
-    low_key = std::stoi(ini.GetValue("Keys", "iLowStanceKey", "259"));
-    mod_key = std::stoi(ini.GetValue("Keys", "iModifierKey", "260"));
+    mid_key  = std::stoi(ini.GetValue("Keys", "iMidStanceKey", "258"));
+    low_key  = std::stoi(ini.GetValue("Keys", "iLowStanceKey", "259"));
+    mod_key  = std::stoi(ini.GetValue("Keys", "iModifierKey", "260"));
 
-
-
-    debug_logging     = ini.GetBoolValue("Log", "Debug");
+    debug_logging = ini.GetBoolValue("Log", "Debug");
 
     if (!high_stance_spell_ID.empty()) {
         HighStanceSpellFormID = ParseFormID(high_stance_spell_ID);
@@ -63,8 +61,6 @@ void Settings::LoadForms() noexcept
 
     if (LowStanceSpellFormID)
         LowStanceSpell = skyrim_cast<RE::SpellItem*>(dataHandler->LookupForm(LowStanceSpellFormID, FileName));
-
-    
 
     logger::info("All Forms loaded");
 

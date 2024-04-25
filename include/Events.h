@@ -2,7 +2,6 @@
 #include "Settings.h"
 #include <Xinput.h>
 
-
 namespace Events
 {
     class InputSink : public RE::BSTEventSink<RE::InputEvent*>
@@ -22,129 +21,122 @@ namespace Events
     public:
         RE::BSEventNotifyControl ProcessEvent(RE::InputEvent* const* eventPtr, RE::BSTEventSource<RE::InputEvent*>*)
         {
-        if (!eventPtr)
-            return RE::BSEventNotifyControl::kContinue;
+            if (!eventPtr)
+                return RE::BSEventNotifyControl::kContinue;
 
-        // Do stuff
-        auto* event = *eventPtr;
-        if (!event)
-            return RE::BSEventNotifyControl::kContinue;
+            // Do stuff
+            auto* event = *eventPtr;
+            if (!event)
+                return RE::BSEventNotifyControl::kContinue;
 
-        for (RE::InputEvent* e = *eventPtr; e; e = e->next) {
-            switch (e->eventType.get()) {
-            case RE::INPUT_EVENT_TYPE::kButton:
-                auto             settings = Settings::GetSingleton();
-                RE::ButtonEvent* a_event = e->AsButtonEvent();
-                uint32_t         keyMask = a_event->idCode;
-                uint32_t         keyCode;
+            for (RE::InputEvent* e = *eventPtr; e; e = e->next) {
+                switch (e->eventType.get()) {
+                case RE::INPUT_EVENT_TYPE::kButton:
+                    auto             settings = Settings::GetSingleton();
+                    RE::ButtonEvent* a_event  = e->AsButtonEvent();
+                    uint32_t         keyMask  = a_event->idCode;
+                    uint32_t         keyCode;
 
-                // Mouse
-                if (a_event->device.get() == RE::INPUT_DEVICE::kMouse) {
-                    keyCode = kMacro_NumKeyboardKeys + keyMask;
-                    
-                }
-                // Gamepad
-                else if (a_event->device.get() == RE::INPUT_DEVICE::kGamepad) {
-                    keyCode = GamepadMaskToKeycode(keyMask);
-                    
-                }
-                // Keyboard
-                else
-                    keyCode = keyMask;                                 
+                    // Mouse
+                    if (a_event->device.get() == RE::INPUT_DEVICE::kMouse) {
+                        keyCode = kMacro_NumKeyboardKeys + keyMask;
+                    }
+                    // Gamepad
+                    else if (a_event->device.get() == RE::INPUT_DEVICE::kGamepad) {
+                        keyCode = GamepadMaskToKeycode(keyMask);
+                    }
+                    // Keyboard
+                    else
+                        keyCode = keyMask;
 
-                // Valid scancode?
-                if (keyCode >= kMaxMacros)
-                    continue;
+                    // Valid scancode?
+                    if (keyCode >= kMaxMacros)
+                        continue;
 
-                float timer  = a_event->HeldDuration();
-                bool  isDown = a_event->Value() != 0 && timer == 0.0;
-                bool  isHeld = a_event->Value() != 0 && timer > 0;
-                bool  isUp   = a_event->Value() == 0 && timer != 0;
-                modifierKey = settings->mod_key;
-                auto  player      = RE::PlayerCharacter::GetSingleton();
+                    float timer  = a_event->HeldDuration();
+                    bool  isDown = a_event->Value() != 0 && timer == 0.0;
+                    bool  isHeld = a_event->Value() != 0 && timer > 0;
+                    bool  isUp   = a_event->Value() == 0 && timer != 0;
+                    modifierKey  = settings->mod_key;
+                    auto player  = RE::PlayerCharacter::GetSingleton();
 
-                if (keyCode == modifierKey && isDown)
-                    keyComboPressed = true;
-                if (keyCode == modifierKey && isUp)
-                    keyComboPressed = false;
+                    if (keyCode == modifierKey && isDown)
+                        keyComboPressed = true;
+                    if (keyCode == modifierKey && isUp)
+                        keyComboPressed = false;
 
-                if (keyCode == settings->high_key) {
-                    if (isDown) {
-                        if (modifierKey >= 2) {
-                            if (keyComboPressed) {
+                    if (keyCode == settings->high_key) {
+                        if (isDown) {
+                            if (modifierKey >= 2) {
+                                if (keyComboPressed) {
+                                    ApplySpell(player, player, settings->HighStanceSpell);
+                                }
+                            }
+                            else {
                                 ApplySpell(player, player, settings->HighStanceSpell);
                             }
                         }
-                        else {                            
-                                ApplySpell(player, player, settings->HighStanceSpell);
-                            
-                        }                    
                     }
-                }
-                if (keyCode == settings->mid_key) {
-                    if (isDown) {
-                        if (modifierKey >= 2) {
-                            if (keyComboPressed) {
+                    if (keyCode == settings->mid_key) {
+                        if (isDown) {
+                            if (modifierKey >= 2) {
+                                if (keyComboPressed) {
+                                    ApplySpell(player, player, settings->MidStanceSpell);
+                                    logger::info("mid stance key pressed with modifier");
+                                }
+                            }
+                            else {
                                 ApplySpell(player, player, settings->MidStanceSpell);
-                                logger::info("mid stance key pressed with modifier");
+                                logger::info("mid stance key pressed without modifier");
                             }
                         }
-                        else {                            
-                                ApplySpell(player, player, settings->MidStanceSpell);
-                                logger::info("mid stance key pressed without modifier");                            
-                        }
                     }
-                    
-                }
-                if (keyCode == settings->low_key) {
-                    if (isDown) {
-                        if (modifierKey >= 2) {
-                            if (keyComboPressed) {
+                    if (keyCode == settings->low_key) {
+                        if (isDown) {
+                            if (modifierKey >= 2) {
+                                if (keyComboPressed) {
+                                    ApplySpell(player, player, settings->LowStanceSpell);
+                                }
+                            }
+                            else {
                                 ApplySpell(player, player, settings->LowStanceSpell);
                             }
                         }
-                        else {                            
-                                ApplySpell(player, player, settings->LowStanceSpell);                            
-                        }
                     }
-                    
                 }
-
             }
-        }       
-        return RE::BSEventNotifyControl::kContinue;
-    };
+            return RE::BSEventNotifyControl::kContinue;
+        };
 
         static void Register()
         {
-        RE::BSInputDeviceManager::GetSingleton()->AddEventSink(InputSink::GetSingleton());
-        logger::info("Registered Input Event");
+            RE::BSInputDeviceManager::GetSingleton()->AddEventSink(InputSink::GetSingleton());
+            logger::info("Registered Input Event");
         }
 
         static bool IsPermanent(RE::MagicItem* item)
-	    {
-		    switch (item->GetSpellType()) {
-		    case RE::MagicSystem::SpellType::kDisease:
-		    case RE::MagicSystem::SpellType::kAbility:
-		    case RE::MagicSystem::SpellType::kAddiction:
-			{
-				return true;
-			}
-		    default:
-			{
-				return false;
-			}
-		    }
-	    }
-	
-	    static inline void ApplySpell(RE::Actor* caster, RE::Actor* target, RE::SpellItem* spell)
-	    {
-		    if (IsPermanent(spell)) {
-			    target->AddSpell(spell);
-		    } else {
-			    caster->GetMagicCaster(RE::MagicSystem::CastingSource::kInstant)->CastSpellImmediate(spell, false, target, 1.0F, false, 0.0F, nullptr);
-		    }
-	    }
+        {
+            switch (item->GetSpellType()) {
+            case RE::MagicSystem::SpellType::kDisease:
+            case RE::MagicSystem::SpellType::kAbility:
+            case RE::MagicSystem::SpellType::kAddiction: {
+                return true;
+            }
+            default: {
+                return false;
+            }
+            }
+        }
+
+        inline static void ApplySpell(RE::Actor* caster, RE::Actor* target, RE::SpellItem* spell)
+        {
+            if (IsPermanent(spell)) {
+                target->AddSpell(spell);
+            }
+            else {
+                caster->GetMagicCaster(RE::MagicSystem::CastingSource::kInstant)->CastSpellImmediate(spell, false, target, 1.0F, false, 0.0F, nullptr);
+            }
+        }
 
         enum
         {
@@ -225,7 +217,6 @@ namespace Events
         }
 
         inline static bool keyComboPressed{ false };
-        uint32_t modifierKey{ 0};
-        
+        uint32_t           modifierKey{ 0 };
     };
 } // namespace Events
