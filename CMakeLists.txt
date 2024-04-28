@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.28)
 message("Using toolchain file ${CMAKE_TOOLCHAIN_FILE}.")
 
 project(
-  StancesReborn
+  StancesNG
   VERSION 1.0.0
   LANGUAGES CXX
 )
@@ -58,7 +58,7 @@ include(extern/CommonLibSSE-NG/cmake/CommonLibSSE.cmake)
 
 add_commonlibsse_plugin(
   ${PROJECT_NAME}
-  AUTHOR colinswrath
+  AUTHOR Styyx
   SOURCES ${headers} ${sources}
 )
 

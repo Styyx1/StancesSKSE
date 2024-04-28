@@ -6,7 +6,7 @@ void Settings::LoadSettings() noexcept
 
     CSimpleIniA ini;
     ini.SetUnicode();
-    ini.LoadFile(R"(.\Data\SKSE\Plugins\StancesReborn.ini)");
+    ini.LoadFile(R"(.\Data\SKSE\Plugins\StancesNG.ini)");
 
     std::string fileName(ini.GetValue("General", "sModFileName", ""));
     std::string high_stance_spell_ID(ini.GetValue("FormID", "HighStanceSpellFormID", ""));
