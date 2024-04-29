@@ -20,15 +20,14 @@ class MenuEvent final : public Singleton<MenuEvent>, public RE::BSTEventSink<RE:
 {
     friend class Singleton<MenuEvent>;
 
-    public:
-        using Event       = RE::MenuOpenCloseEvent*;
-        using EventSource = RE::BSTEventSource<Event>;
+public:
+    using Event       = RE::MenuOpenCloseEvent*;
+    using EventSource = RE::BSTEventSource<Event>;
 
-        static void Register();
+    static void Register();
 
-        RE::BSEventNotifyControl ProcessEvent(const RE::MenuOpenCloseEvent* event, RE::BSTEventSource<RE::MenuOpenCloseEvent>* a_eventSource) override;
+    RE::BSEventNotifyControl ProcessEvent(const RE::MenuOpenCloseEvent* event, RE::BSTEventSource<RE::MenuOpenCloseEvent>* a_eventSource) override;
 
-    private:
-        MenuEvent() = default;
-
+private:
+    MenuEvent() = default;
 };

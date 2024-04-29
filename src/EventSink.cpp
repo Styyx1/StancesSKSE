@@ -38,7 +38,6 @@ RE::BSEventNotifyControl MenuEvent::ProcessEvent(const RE::MenuOpenCloseEvent* e
     if (event->menuName != RE::RaceSexMenu::MENU_NAME)
         return RE::BSEventNotifyControl::kContinue;
 
-
     if (event->menuName == RE::RaceSexMenu::MENU_NAME) {
         if (event->opening) {
             logger::debug("OPEN MENU {}", event->menuName);
@@ -46,11 +45,11 @@ RE::BSEventNotifyControl MenuEvent::ProcessEvent(const RE::MenuOpenCloseEvent* e
         else {
             logger::debug("CLOSE MENU {}", event->menuName);
             if (!EventManager::HasAnyStance())
-            EventManager::ApplyStance(settings->MidStanceSpell);
+                EventManager::ApplyStance(settings->MidStanceSpell);
             logger::debug("applied {} after {} closed", settings->MidStanceSpell->GetName(), event->menuName);
         }
-    }    
-        
+    }
+
     return RE::BSEventNotifyControl::kContinue;
 }
 
@@ -64,5 +63,3 @@ void MenuEvent::Register()
         SKSE::log::error("Failed to register menu event.");
     }
 }
-
-

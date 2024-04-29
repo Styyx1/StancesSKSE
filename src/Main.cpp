@@ -1,8 +1,8 @@
+#include "EventManager.h"
 #include "EventSink.h"
 #include "Logging.h"
 #include "SKSE/Interfaces.h"
 #include "Settings.h"
-#include "EventManager.h"
 
 void Listener(SKSE::MessagingInterface::Message* message) noexcept
 {
@@ -13,7 +13,7 @@ void Listener(SKSE::MessagingInterface::Message* message) noexcept
         InputEventSink::Register();
         MenuEvent::Register();
     }
-    if (message->type == SKSE::MessagingInterface::kPostLoadGame) {        
+    if (message->type == SKSE::MessagingInterface::kPostLoadGame) {
         if (!EventManager::HasAnyStance()) {
             logger::debug("no stance detected, applies mid stance");
             EventManager::ApplyStance(Settings::GetSingleton()->MidStanceSpell);

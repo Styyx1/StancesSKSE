@@ -50,7 +50,6 @@ RE::FormID Settings::ParseFormID(const std::string& str)
     return result;
 }
 
-
 void Settings::LoadForms() noexcept
 {
     auto dataHandler = RE::TESDataHandler::GetSingleton();
@@ -73,7 +72,6 @@ void Settings::LoadForms() noexcept
         logger::info("High stance spell {} loaded", Settings::LowStanceSpell->GetName());
         logger::info("ID for it is {}", Settings::LowStanceSpell->GetFormID());
     }
-        
 
     logger::info("All Forms loaded");
 
