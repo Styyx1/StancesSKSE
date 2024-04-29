@@ -26,4 +26,5 @@ public:
     static RE::FormID ParseFormID(const std::string& str);
 
     inline static bool debug_logging{};
+    static std::string bool_as_text(bool a_bool);
 };

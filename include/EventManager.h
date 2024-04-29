@@ -10,6 +10,7 @@ public:
     static bool IsPermanent(RE::MagicItem* item);
     static void ApplySpell(RE::Actor* caster, RE::Actor* target, RE::SpellItem* spell);
     static void ApplyStance(RE::SpellItem* a_spell);
+    static bool HasAnyStance();
 
 private:
     EventManager() = default;

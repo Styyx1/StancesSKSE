@@ -1,5 +1,4 @@
 #include "EventSink.h"
-
 #include "EventManager.h"
 #include "HotkeyManager.h"
 
@@ -28,3 +27,42 @@ RE::BSEventNotifyControl InputEventSink::ProcessEvent(const Event* a_event, [[ma
 
     return RE::BSEventNotifyControl::kContinue;
 }
+
+RE::BSEventNotifyControl MenuEvent::ProcessEvent(const RE::MenuOpenCloseEvent* event, [[maybe_unused]] RE::BSTEventSource<RE::MenuOpenCloseEvent>* a_eventSource)
+{
+    auto settings = Settings::GetSingleton();
+
+    if (!event)
+        return RE::BSEventNotifyControl::kContinue;
+
+    if (event->menuName != RE::RaceSexMenu::MENU_NAME)
+        return RE::BSEventNotifyControl::kContinue;
+
+
+    if (event->menuName == RE::RaceSexMenu::MENU_NAME) {
+        if (event->opening) {
+            logger::debug("OPEN MENU {}", event->menuName);
+        }
+        else {
+            logger::debug("CLOSE MENU {}", event->menuName);
+            if (!EventManager::HasAnyStance())
+            EventManager::ApplyStance(settings->MidStanceSpell);
+            logger::debug("applied {} after {} closed", settings->MidStanceSpell->GetName(), event->menuName);
+        }
+    }    
+        
+    return RE::BSEventNotifyControl::kContinue;
+}
+
+void MenuEvent::Register()
+{
+    if (auto* eventSink = MenuEvent::GetSingleton()) {
+        RE::UI::GetSingleton()->AddEventSink(eventSink);
+        logger::info("Registered for Menu Event");
+    }
+    else {
+        SKSE::log::error("Failed to register menu event.");
+    }
+}
+
+

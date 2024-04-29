@@ -50,19 +50,30 @@ RE::FormID Settings::ParseFormID(const std::string& str)
     return result;
 }
 
+
 void Settings::LoadForms() noexcept
 {
     auto dataHandler = RE::TESDataHandler::GetSingleton();
 
     logger::info("Loading forms");
-    if (HighStanceSpellFormID)
+    if (HighStanceSpellFormID) {
         HighStanceSpell = skyrim_cast<RE::SpellItem*>(dataHandler->LookupForm(HighStanceSpellFormID, FileName));
+        logger::info("High stance spell {} loaded", Settings::HighStanceSpell->GetName());
+        logger::info("ID for it is {}", Settings::HighStanceSpell->GetFormID());
+    }
 
-    if (MidStanceSpellFormID)
+    if (MidStanceSpellFormID) {
         MidStanceSpell = skyrim_cast<RE::SpellItem*>(dataHandler->LookupForm(MidStanceSpellFormID, FileName));
+        logger::info("High stance spell {} loaded", Settings::MidStanceSpell->GetName());
+        logger::info("ID for it is {}", Settings::MidStanceSpell->GetFormID());
+    }
 
-    if (LowStanceSpellFormID)
+    if (LowStanceSpellFormID) {
         LowStanceSpell = skyrim_cast<RE::SpellItem*>(dataHandler->LookupForm(LowStanceSpellFormID, FileName));
+        logger::info("High stance spell {} loaded", Settings::LowStanceSpell->GetName());
+        logger::info("ID for it is {}", Settings::LowStanceSpell->GetFormID());
+    }
+        
 
     logger::info("All Forms loaded");
 
