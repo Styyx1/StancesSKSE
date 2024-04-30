@@ -19,7 +19,7 @@ RE::BSEventNotifyControl InputEventSink::ProcessEvent(const Event* a_event, [[ma
         return RE::BSEventNotifyControl::kContinue;
     }
 
-    if (auto player = RE::PlayerCharacter::GetSingleton(); !player || !player->Is3DLoaded()) {
+    if (RE::PlayerCharacter* player = Cache::GetPlayerSingleton(); !player || !player->Is3DLoaded()) {
         return RE::BSEventNotifyControl::kContinue;
     }
 

@@ -3,7 +3,7 @@ message("Using toolchain file ${CMAKE_TOOLCHAIN_FILE}.")
 
 project(
   StancesNG
-  VERSION 1.1.0
+  VERSION 1.1.1
   LANGUAGES CXX
 )
 

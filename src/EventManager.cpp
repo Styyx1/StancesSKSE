@@ -29,7 +29,7 @@ void EventManager::ApplySpell(RE::Actor* caster, RE::Actor* target, RE::SpellIte
 void EventManager::ApplyStance(RE::SpellItem* a_spell)
 {
     auto menu   = RE::UI::GetSingleton();
-    auto player = RE::PlayerCharacter::GetSingleton();
+    RE::PlayerCharacter* player = Cache::GetPlayerSingleton();
     if (!menu->GameIsPaused()) {
         EventManager::ApplySpell(player, player, a_spell);
         logger::debug("player switched stance to: {}", a_spell->GetName());
@@ -38,7 +38,7 @@ void EventManager::ApplyStance(RE::SpellItem* a_spell)
 
 bool EventManager::HasAnyStance()
 {
-    auto player   = RE::PlayerCharacter::GetSingleton();
+    RE::PlayerCharacter* player = Cache::GetPlayerSingleton();
     auto settings = Settings::GetSingleton();
     if (player->HasSpell(settings->HighStanceSpell))
         return true;
