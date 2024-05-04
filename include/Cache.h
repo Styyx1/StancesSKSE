@@ -8,7 +8,7 @@ namespace Cache
     {
         // 1.6 = 403521
         // 1.5 = 517014
-        PlayerSingletonAddress = REL::RelocationID(517014, 403521, 0x2FEB9F0).address();
+        PlayerSingletonAddress = REL::RelocationID(517014, 403521).address();
     }
 
     inline RE::PlayerCharacter* GetPlayerSingleton()
