@@ -32,7 +32,7 @@ SKSEPluginLoad(const SKSE::LoadInterface* skse)
     const auto version{ plugin->GetVersion() };
 
     logger::info("{} {} is loading...", plugin->GetName(), version);
-    Init(skse);
+    SKSE::Init(skse);
     Cache::CacheAddLibAddresses();
     if (const auto messaging{ SKSE::GetMessagingInterface() }; !messaging->RegisterListener(Listener))
         return false;
