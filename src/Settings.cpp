@@ -20,6 +20,7 @@ void Settings::LoadSettings() noexcept
     mod_key_mid  = std::stoi(ini.GetValue("Keys", "iModifierKeyMidStance", "260"));
     mod_key_low  = std::stoi(ini.GetValue("Keys", "iModifierKeyLowStance", "260"));
 
+    useCycle      = ini.GetBoolValue("Keys", "bUseCycling");
     debug_logging = ini.GetBoolValue("Log", "Debug");
 
     if (!high_stance_spell_ID.empty()) {
@@ -37,6 +38,21 @@ void Settings::LoadSettings() noexcept
         spdlog::get("Global")->set_level(spdlog::level::level_enum::debug);
         logger::debug("Debug logging enabled");
     };
+
+    if (mod_key_low == 0) {
+        logger::debug("low modifier is invalid");
+        mod_key_low = CLib::INVALID_KEY;
+    }
+    if (mod_key_mid == 0) {
+        logger::debug("mid modifier is invalid");
+        mod_key_mid = CLib::INVALID_KEY;
+    }
+    if (mod_key_high == 0) {
+        logger::debug("high modifier is invalid");
+        mod_key_high = CLib::INVALID_KEY;
+    }
+
+    cycleKey = mid_key;
     // Load settings
     FileName = fileName;
     logger::info("Loaded settings");
@@ -57,20 +73,20 @@ void Settings::LoadForms() noexcept
     logger::info("Loading forms");
     if (HighStanceSpellFormID) {
         HighStanceSpell = skyrim_cast<RE::SpellItem*>(dataHandler->LookupForm(HighStanceSpellFormID, FileName));
-        logger::info("High stance spell {} loaded", Settings::HighStanceSpell->GetName());
-        logger::info("ID for it is {}", Settings::HighStanceSpell->GetFormID());
+        logger::debug("High stance spell {} loaded", Settings::HighStanceSpell->GetName());
+        logger::debug("ID for it is {}", Settings::HighStanceSpell->GetFormID());
     }
 
     if (MidStanceSpellFormID) {
         MidStanceSpell = skyrim_cast<RE::SpellItem*>(dataHandler->LookupForm(MidStanceSpellFormID, FileName));
-        logger::info("High stance spell {} loaded", Settings::MidStanceSpell->GetName());
-        logger::info("ID for it is {}", Settings::MidStanceSpell->GetFormID());
+        logger::debug("High stance spell {} loaded", Settings::MidStanceSpell->GetName());
+        logger::debug("ID for it is {}", Settings::MidStanceSpell->GetFormID());
     }
 
     if (LowStanceSpellFormID) {
         LowStanceSpell = skyrim_cast<RE::SpellItem*>(dataHandler->LookupForm(LowStanceSpellFormID, FileName));
-        logger::info("High stance spell {} loaded", Settings::LowStanceSpell->GetName());
-        logger::info("ID for it is {}", Settings::LowStanceSpell->GetFormID());
+        logger::debug("High stance spell {} loaded", Settings::LowStanceSpell->GetName());
+        logger::debug("ID for it is {}", Settings::LowStanceSpell->GetFormID());
     }
 
     logger::info("All Forms loaded");

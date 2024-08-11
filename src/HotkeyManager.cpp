@@ -1,64 +1,19 @@
 #include "HotkeyManager.h"
-
 #include "EventManager.h"
 #include "PCH.h"
 
-namespace
-{
-    inline std::uint32_t RemapKey(std::uint32_t a_key, RE::INPUT_DEVICE a_device)
-    {
-        switch (a_device) {
-        case RE::INPUT_DEVICE::kKeyboard:
-            break;
-        case RE::INPUT_DEVICE::kMouse:
-            a_key += SKSE::InputMap::kMacro_MouseButtonOffset;
-            break;
-        case RE::INPUT_DEVICE::kGamepad:
-            a_key = SKSE::InputMap::GamepadMaskToKeycode(a_key);
-            break;
-        default:
-            break;
-        }
-        return a_key;
-    }
-
-    class KeyCombo
-    {
-    public:
-        constexpr KeyCombo(std::uint32_t a_targetHotkey, std::uint32_t a_targetModifier) noexcept : targetHotkey(a_targetHotkey), targetModifier(a_targetModifier) {}
-
-        bool IsActive() const noexcept //
-        {
-            return (hasHotkey && hasModifier) || (hasHotkey && targetModifier == 0);
-        }
-
-        void UpdateDown(std::uint32_t a_key) noexcept
-        {
-            if (targetHotkey != 0 && a_key == targetHotkey) {
-                hasHotkey = true;
-            }
-        }
-
-        void UpdatePressed(std::uint32_t a_key) noexcept
-        {
-            if (targetModifier != 0 && a_key == targetModifier) {
-                hasModifier = true;
-            }
-        }
-
-    private:
-        const std::uint32_t targetHotkey;
-        const std::uint32_t targetModifier;
-
-        bool hasHotkey{ false };
-        bool hasModifier{ false };
-    };
+namespace {
 
     class HotkeyContext
     {
+        
     public:
-        HotkeyContext(const Settings* config)
-            : hotkey_high(config->high_key, config->mod_key_high), hotkey_mid(config->mid_key, config->mod_key_mid), hotkey_low(config->low_key, config->mod_key_low)
+
+       inline static bool isDisabled{ false };
+
+         explicit HotkeyContext(const Settings* settings)
+           : hotkey_high(settings->high_key, settings->mod_key_high), hotkey_mid(settings->mid_key, settings->mod_key_mid), hotkey_low(settings->low_key, settings->mod_key_low),
+             cycle_key(settings->cycleKey)
         {
         }
 
@@ -69,16 +24,17 @@ namespace
             }
 
             if (a_button->IsPressed()) {
-                auto key = RemapKey(a_button->GetIDCode(), a_button->GetDevice());
+                auto key = CLib::ParseKey(a_button->GetIDCode(), a_button->GetDevice());
 
                 hotkey_high.UpdatePressed(key);
                 hotkey_mid.UpdatePressed(key);
                 hotkey_low.UpdatePressed(key);
-
+                
                 if (a_button->IsDown()) {
                     hotkey_high.UpdateDown(key);
                     hotkey_mid.UpdateDown(key);
                     hotkey_low.UpdateDown(key);
+                    cycle_key.Update(key);
                 }
             }
         }
@@ -86,36 +42,77 @@ namespace
         void Finalize(EventManager* input)
         {
             auto settings = Settings::GetSingleton();
+            auto player   = Cache::GetPlayerSingleton();
 
-            if (hotkey_mid.IsActive()) {
-                input->ApplyStance(settings->MidStanceSpell);
-            }
+            for (std::uint32_t count = 2; count > 0; --count) {
+                bool done = false;
+                if (hotkey_mid.IsActive() && !settings->useCycle) {
+                    input->ApplyStance(settings->MidStanceSpell);
+                    logger::debug("don't use cycling");
+                    done = true;
+                }
+                if (hotkey_low.IsActive() && !settings->useCycle) {
+                    input->ApplyStance(settings->LowStanceSpell);
+                    logger::debug("don't use cycling");
+                    done = true;
+                }
+                if (hotkey_high.IsActive() && !settings->useCycle) {
+                    input->ApplyStance(settings->HighStanceSpell);
+                    logger::debug("don't use cycling");
+                    done = true;
+                }  
+                if (settings->useCycle && cycle_key.IsActive()) {
+                    if (done) {
+                        logger::debug("break during cycle key");
+                        break;
+                    }
+                    logger::debug("cycle key is active");
+                    if (player->HasSpell(settings->LowStanceSpell)) {
+                        logger::debug("Low Stance active");
+                        player->RemoveSpell(settings->LowStanceSpell);
+                        input->ApplyStance(settings->MidStanceSpell);
+                        done = true;
+                    }
 
-            if (hotkey_low.IsActive()) {
-                input->ApplyStance(settings->LowStanceSpell);
-            }
-
-            if (hotkey_high.IsActive()) {
-                input->ApplyStance(settings->HighStanceSpell);
-            }
+                    else if (player->HasSpell(settings->MidStanceSpell)) {
+                        logger::debug("Mid Stance active");
+                        player->RemoveSpell(settings->MidStanceSpell);
+                        input->ApplyStance(settings->HighStanceSpell);
+                        done = true;
+                    }
+                    else if (player->HasSpell(settings->HighStanceSpell)) {
+                        logger::debug("High Stance active");
+                        player->RemoveSpell(settings->HighStanceSpell);
+                        input->ApplyStance(settings->LowStanceSpell);
+                        done = true;
+                    }
+                }   
+                if (done) {
+                        logger::debug("break after cycle key bool checks");
+                        break;
+                }                    
+            } 
         }
 
     private:
-        KeyCombo hotkey_high;
-        KeyCombo hotkey_mid;
-        KeyCombo hotkey_low;
+        CLib::KeyCombo hotkey_high;
+        CLib::KeyCombo hotkey_mid;
+        CLib::KeyCombo hotkey_low;
+        CLib::Key      cycle_key;
     };
 } // namespace
 
 void HotkeyManager::Process(const RE::InputEvent* const* a_event)
 
 {
+    
     const auto settings = Settings::GetSingleton();
 
     HotkeyContext ctx{ settings };
 
+
     for (auto event = *a_event; event; event = event->next) {
-        if (auto button = event->AsButtonEvent()) {
+        if (auto button = event->AsButtonEvent()) {            
             ctx.Update(button);
         }
     }

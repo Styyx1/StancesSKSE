@@ -15,7 +15,7 @@ void InputEventSink::Register()
 
 RE::BSEventNotifyControl InputEventSink::ProcessEvent(const Event* a_event, [[maybe_unused]] EventSource*)
 {
-    if (!a_event) {
+    if (!a_event || !RE::Main::GetSingleton()->gameActive) {
         return RE::BSEventNotifyControl::kContinue;
     }
 

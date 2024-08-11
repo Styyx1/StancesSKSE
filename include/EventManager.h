@@ -12,6 +12,7 @@ public:
     static void ApplySpell(RE::Actor* caster, RE::Actor* target, RE::SpellItem* spell);
     static void ApplyStance(RE::SpellItem* a_spell);
     static bool HasAnyStance();
+    static void RemoveSpells(RE::SpellItem* a_newStance);
 
 private:
     EventManager() = default;

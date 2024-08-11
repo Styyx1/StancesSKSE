@@ -49,3 +49,19 @@ bool EventManager::HasAnyStance()
     else
         return false;
 }
+
+void EventManager::RemoveSpells(RE::SpellItem* a_newStance)
+{
+    RE::PlayerCharacter* player        = Cache::GetPlayerSingleton();
+    Settings*                 settings      = Settings::GetSingleton();
+    RE::SpellItem* currentStance = a_newStance;
+    if (player->HasSpell(settings->HighStanceSpell) && currentStance != settings->HighStanceSpell) {
+        player->RemoveSpell(settings->HighStanceSpell);
+    }
+    if (player->HasSpell(settings->MidStanceSpell) && currentStance != settings->MidStanceSpell) {
+        player->RemoveSpell(settings->MidStanceSpell);
+    }
+    if (player->HasSpell(settings->LowStanceSpell) && currentStance != settings->LowStanceSpell) {
+        player->RemoveSpell(settings->LowStanceSpell);
+    }
+}

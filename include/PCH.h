@@ -147,6 +147,7 @@
 #include <Psapi.h>
 #include <Windows.h>
 #include "SimpleIni.h"
+#include <CLIBUtil/Key.h>
 // clang-format on
 
 #include <spdlog/sinks/basic_file_sink.h>
