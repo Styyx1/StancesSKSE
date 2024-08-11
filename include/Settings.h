@@ -24,10 +24,9 @@ public:
     RE::SpellItem* MidStanceSpell;
     RE::SpellItem* LowStanceSpell;
 
-    static RE::FormID ParseFormID(const std::string& str);
+    static RE::FormID  ParseFormID(const std::string& str);
     inline static bool useCycle{};
 
     inline static bool debug_logging{};
     static std::string bool_as_text(bool a_bool);
-
 };

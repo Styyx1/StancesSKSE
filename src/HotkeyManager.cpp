@@ -2,18 +2,17 @@
 #include "EventManager.h"
 #include "PCH.h"
 
-namespace {
+namespace
+{
 
     class HotkeyContext
     {
-        
     public:
+        inline static bool isDisabled{ false };
 
-       inline static bool isDisabled{ false };
-
-         explicit HotkeyContext(const Settings* settings)
-           : hotkey_high(settings->high_key, settings->mod_key_high), hotkey_mid(settings->mid_key, settings->mod_key_mid), hotkey_low(settings->low_key, settings->mod_key_low),
-             cycle_key(settings->cycleKey)
+        explicit HotkeyContext(const Settings* settings)
+            : hotkey_high(settings->high_key, settings->mod_key_high), hotkey_mid(settings->mid_key, settings->mod_key_mid), hotkey_low(settings->low_key, settings->mod_key_low),
+              cycle_key(settings->cycleKey)
         {
         }
 
@@ -29,7 +28,7 @@ namespace {
                 hotkey_high.UpdatePressed(key);
                 hotkey_mid.UpdatePressed(key);
                 hotkey_low.UpdatePressed(key);
-                
+
                 if (a_button->IsDown()) {
                     hotkey_high.UpdateDown(key);
                     hotkey_mid.UpdateDown(key);
@@ -60,7 +59,7 @@ namespace {
                     input->ApplyStance(settings->HighStanceSpell);
                     logger::debug("don't use cycling");
                     done = true;
-                }  
+                }
                 if (settings->useCycle && cycle_key.IsActive()) {
                     if (done) {
                         logger::debug("break during cycle key");
@@ -86,12 +85,12 @@ namespace {
                         input->ApplyStance(settings->LowStanceSpell);
                         done = true;
                     }
-                }   
+                }
                 if (done) {
-                        logger::debug("break after cycle key bool checks");
-                        break;
-                }                    
-            } 
+                    logger::debug("break after cycle key bool checks");
+                    break;
+                }
+            }
         }
 
     private:
@@ -105,14 +104,12 @@ namespace {
 void HotkeyManager::Process(const RE::InputEvent* const* a_event)
 
 {
-    
     const auto settings = Settings::GetSingleton();
 
     HotkeyContext ctx{ settings };
 
-
     for (auto event = *a_event; event; event = event->next) {
-        if (auto button = event->AsButtonEvent()) {            
+        if (auto button = event->AsButtonEvent()) {
             ctx.Update(button);
         }
     }
