@@ -28,12 +28,12 @@ namespace
                 hotkey_high.UpdatePressed(key);
 
                 if (a_button->IsDown()) {
-                    hotkey_low.UpdateDown(key); 
+                    hotkey_low.UpdateDown(key);
                     hotkey_mid.UpdateDown(key);
                     hotkey_high.UpdateDown(key);
                 }
             }
-        } 
+        }
 
         void Finalize(EventManager* input)
         {
@@ -54,7 +54,9 @@ namespace
                     if (hotkey_mid.IsActive()) {
                         for (std::size_t i = 0; i < keySpellCombo.size(); ++i) {
                             if (player->HasSpell(keySpellCombo[i].second)) {
-                                player->RemoveSpell(keySpellCombo[i].second); // needed because the spell is the condition for applying the other spell. does not work without the spell condition some
+                                player->RemoveSpell(
+                                    keySpellCombo[i]
+                                        .second); // needed because the spell is the condition for applying the other spell. does not work without the spell condition some
                                 input->ApplyStance(keySpellCombo[(i + 1) % keySpellCombo.size()].second); // Activate the next stance in cycle
                                 logger::debug("Exiting loop after stance application (cycle mode)");
                                 break;
@@ -62,7 +64,7 @@ namespace
                         }
                     }
                 }
-                else {                    
+                else {
                     // Vector
                     for (auto& i : keySpellCombo) {
                         if (i.first.Count() == count && i.first.IsActive()) {
@@ -83,7 +85,6 @@ namespace
         CLib::KeyCombo hotkey_high;
         CLib::KeyCombo hotkey_mid;
         CLib::KeyCombo hotkey_low;
-
     };
 } // namespace
 
