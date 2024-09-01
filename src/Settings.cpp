@@ -39,7 +39,7 @@ void Settings::LoadSettings() noexcept
         logger::debug("Debug logging enabled");
     };
 
-    if (mod_key_low == 0) {
+    /*if (mod_key_low == 0) {
         logger::debug("low modifier is invalid");
         mod_key_low = CLib::INVALID_KEY;
     }
@@ -50,9 +50,8 @@ void Settings::LoadSettings() noexcept
     if (mod_key_high == 0) {
         logger::debug("high modifier is invalid");
         mod_key_high = CLib::INVALID_KEY;
-    }
+    }*/
 
-    cycleKey = mid_key;
     // Load settings
     FileName = fileName;
     logger::info("Loaded settings");
@@ -73,20 +72,20 @@ void Settings::LoadForms() noexcept
     logger::info("Loading forms");
     if (HighStanceSpellFormID) {
         HighStanceSpell = skyrim_cast<RE::SpellItem*>(dataHandler->LookupForm(HighStanceSpellFormID, FileName));
-        logger::debug("High stance spell {} loaded", Settings::HighStanceSpell->GetName());
-        logger::debug("ID for it is {}", Settings::HighStanceSpell->GetFormID());
+        logger::debug("High stance spell {} loaded", HighStanceSpell->GetName());
+        logger::debug("ID for it is {}", HighStanceSpell->GetFormID());
     }
 
     if (MidStanceSpellFormID) {
         MidStanceSpell = skyrim_cast<RE::SpellItem*>(dataHandler->LookupForm(MidStanceSpellFormID, FileName));
-        logger::debug("High stance spell {} loaded", Settings::MidStanceSpell->GetName());
-        logger::debug("ID for it is {}", Settings::MidStanceSpell->GetFormID());
+        logger::debug("High stance spell {} loaded", MidStanceSpell->GetName());
+        logger::debug("ID for it is {}", MidStanceSpell->GetFormID());
     }
 
     if (LowStanceSpellFormID) {
         LowStanceSpell = skyrim_cast<RE::SpellItem*>(dataHandler->LookupForm(LowStanceSpellFormID, FileName));
-        logger::debug("High stance spell {} loaded", Settings::LowStanceSpell->GetName());
-        logger::debug("ID for it is {}", Settings::LowStanceSpell->GetFormID());
+        logger::debug("High stance spell {} loaded", LowStanceSpell->GetName());
+        logger::debug("ID for it is {}", LowStanceSpell->GetFormID());
     }
 
     logger::info("All Forms loaded");

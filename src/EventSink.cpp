@@ -23,6 +23,10 @@ RE::BSEventNotifyControl InputEventSink::ProcessEvent(const Event* a_event, [[ma
         return RE::BSEventNotifyControl::kContinue;
     }
 
+    if (RE::UI* ui = RE::UI::GetSingleton(); !ui || ui->IsMenuOpen(RE::MainMenu::MENU_NAME)) {
+        return RE::BSEventNotifyControl::kContinue;
+    }
+
     HotkeyManager::Process(a_event);
 
     return RE::BSEventNotifyControl::kContinue;

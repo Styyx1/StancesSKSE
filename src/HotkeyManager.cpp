@@ -11,8 +11,7 @@ namespace
         inline static bool isDisabled{ false };
 
         explicit HotkeyContext(const Settings* settings)
-            : hotkey_high(settings->high_key, settings->mod_key_high), hotkey_mid(settings->mid_key, settings->mod_key_mid), hotkey_low(settings->low_key, settings->mod_key_low),
-              cycle_key(settings->cycleKey)
+            : hotkey_high(settings->high_key, settings->mod_key_high), hotkey_mid(settings->mid_key, settings->mod_key_mid), hotkey_low(settings->low_key, settings->mod_key_low)
         {
         }
 
@@ -24,72 +23,59 @@ namespace
 
             if (a_button->IsPressed()) {
                 auto key = CLib::ParseKey(a_button->GetIDCode(), a_button->GetDevice());
-
-                hotkey_high.UpdatePressed(key);
-                hotkey_mid.UpdatePressed(key);
                 hotkey_low.UpdatePressed(key);
+                hotkey_mid.UpdatePressed(key);
+                hotkey_high.UpdatePressed(key);
 
                 if (a_button->IsDown()) {
-                    hotkey_high.UpdateDown(key);
+                    hotkey_low.UpdateDown(key); 
                     hotkey_mid.UpdateDown(key);
-                    hotkey_low.UpdateDown(key);
-                    cycle_key.Update(key);
+                    hotkey_high.UpdateDown(key);
                 }
             }
-        }
+        } 
 
         void Finalize(EventManager* input)
         {
             auto settings = Settings::GetSingleton();
             auto player   = Cache::GetPlayerSingleton();
 
+            // vector with key-stance pairs for easy access in the cycle function and in the regular function
+            std::vector<std::pair<CLib::KeyCombo, RE::SpellItem*>> keySpellCombo = {
+                { hotkey_low,  settings->LowStanceSpell},
+                { hotkey_mid,  settings->MidStanceSpell},
+                {hotkey_high, settings->HighStanceSpell}
+            };
+
             for (std::uint32_t count = 2; count > 0; --count) {
                 bool done = false;
-                if (hotkey_mid.IsActive() && !settings->useCycle) {
-                    input->ApplyStance(settings->MidStanceSpell);
-                    logger::debug("don't use cycling");
-                    done = true;
-                }
-                if (hotkey_low.IsActive() && !settings->useCycle) {
-                    input->ApplyStance(settings->LowStanceSpell);
-                    logger::debug("don't use cycling");
-                    done = true;
-                }
-                if (hotkey_high.IsActive() && !settings->useCycle) {
-                    input->ApplyStance(settings->HighStanceSpell);
-                    logger::debug("don't use cycling");
-                    done = true;
-                }
-                if (settings->useCycle && cycle_key.IsActive()) {
-                    if (done) {
-                        logger::debug("break during cycle key");
-                        break;
-                    }
-                    logger::debug("cycle key is active");
-                    if (player->HasSpell(settings->LowStanceSpell)) {
-                        logger::debug("Low Stance active");
-                        player->RemoveSpell(settings->LowStanceSpell);
-                        input->ApplyStance(settings->MidStanceSpell);
-                        done = true;
-                    }
-
-                    else if (player->HasSpell(settings->MidStanceSpell)) {
-                        logger::debug("Mid Stance active");
-                        player->RemoveSpell(settings->MidStanceSpell);
-                        input->ApplyStance(settings->HighStanceSpell);
-                        done = true;
-                    }
-                    else if (player->HasSpell(settings->HighStanceSpell)) {
-                        logger::debug("High Stance active");
-                        player->RemoveSpell(settings->HighStanceSpell);
-                        input->ApplyStance(settings->LowStanceSpell);
-                        done = true;
+                if (settings->useCycle) {
+                    // Handle cycle mode
+                    if (hotkey_mid.IsActive()) {
+                        for (std::size_t i = 0; i < keySpellCombo.size(); ++i) {
+                            if (player->HasSpell(keySpellCombo[i].second)) {
+                                player->RemoveSpell(keySpellCombo[i].second); // needed because the spell is the condition for applying the other spell. does not work without the spell condition some
+                                input->ApplyStance(keySpellCombo[(i + 1) % keySpellCombo.size()].second); // Activate the next stance in cycle
+                                logger::debug("Exiting loop after stance application (cycle mode)");
+                                break;
+                            }
+                        }
                     }
                 }
-                if (done) {
-                    logger::debug("break after cycle key bool checks");
+                else {                    
+                    // Vector
+                    for (auto& i : keySpellCombo) {
+                        if (i.first.Count() == count && i.first.IsActive()) {
+                            input->ApplyStance(i.second);
+                            logger::debug("Exiting loop after stance application (regular mode)");
+                            done = true;
+                            break;
+                        }
+                    }
+                }
+                // needed to break out of the for loop and wait for the next key (i think). not sure but needed anyway.
+                if (done)
                     break;
-                }
             }
         }
 
@@ -97,7 +83,7 @@ namespace
         CLib::KeyCombo hotkey_high;
         CLib::KeyCombo hotkey_mid;
         CLib::KeyCombo hotkey_low;
-        CLib::Key      cycle_key;
+
     };
 } // namespace
 

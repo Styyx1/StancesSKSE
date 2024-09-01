@@ -10,11 +10,19 @@ void Listener(SKSE::MessagingInterface::Message* message) noexcept
     if (message->type <=> SKSE::MessagingInterface::kDataLoaded == 0) {
         auto settings = Settings::GetSingleton();
         settings->LoadSettings();
-        settings->LoadForms();
-        InputEventSink::Register();
+        settings->LoadForms();        
         MenuEvent::Register();
+        InputEventSink::Register();
     }
     if (message->type == SKSE::MessagingInterface::kPostLoadGame) {
+        if (!EventManager::HasAnyStance()) {
+            logger::debug("no stance detected, applies mid stance");
+            EventManager::ApplyStance(Settings::GetSingleton()->MidStanceSpell);
+        }
+        else
+            logger::debug("player already has stance");
+    }
+    if (message->type <=> SKSE::MessagingInterface::kNewGame == 0) {
         if (!EventManager::HasAnyStance()) {
             logger::debug("no stance detected, applies mid stance");
             EventManager::ApplyStance(Settings::GetSingleton()->MidStanceSpell);

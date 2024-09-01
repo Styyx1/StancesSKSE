@@ -28,5 +28,4 @@ public:
     inline static bool useCycle{};
 
     inline static bool debug_logging{};
-    static std::string bool_as_text(bool a_bool);
 };

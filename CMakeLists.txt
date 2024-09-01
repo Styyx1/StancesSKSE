@@ -110,9 +110,9 @@ add_custom_command(
   COMMAND
   ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/contrib/Config/${PROJECT_NAME}.ini ${CMAKE_CURRENT_SOURCE_DIR}/contrib/Plugin${BUILD_NAME}/skse/plugins
   COMMAND
-  ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${PROJECT_NAME}> D:/NewADT/mods/Stances\ NG/skse/plugins
+  ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${PROJECT_NAME}> D:/NewADT/mods/StancesRewriteTest/skse/plugins
   COMMAND
-  ${CMAKE_COMMAND} -E copy $<TARGET_PDB_FILE:${PROJECT_NAME}> D:/NewADT/mods/Stances\ NG/skse/plugins
+  ${CMAKE_COMMAND} -E copy $<TARGET_PDB_FILE:${PROJECT_NAME}> D:/NewADT/mods/StancesRewriteTest/skse/plugins
 )
 
 
