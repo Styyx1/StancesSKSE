@@ -44,12 +44,14 @@ void Settings::LoadSettings() noexcept
         mod_key_low = CLib::INVALID_KEY;
     }
     if (mod_key_mid == 0) {
-        logger::debug("mid modifier is invalid");
+ logger::debug("mid
+     * modifier is invalid");
         mod_key_mid = CLib::INVALID_KEY;
     }
     if (mod_key_high == 0) {
         logger::debug("high modifier is invalid");
-        mod_key_high = CLib::INVALID_KEY;
+        mod_key_high =
+     * CLib::INVALID_KEY;
     }*/
 
     // Load settings
