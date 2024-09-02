@@ -39,21 +39,6 @@ void Settings::LoadSettings() noexcept
         logger::debug("Debug logging enabled");
     };
 
-    /*if (mod_key_low == 0) {
-        logger::debug("low modifier is invalid");
-        mod_key_low = CLib::INVALID_KEY;
-    }
-    if (mod_key_mid == 0) {
- logger::debug("mid
-     * modifier is invalid");
-        mod_key_mid = CLib::INVALID_KEY;
-    }
-    if (mod_key_high == 0) {
-        logger::debug("high modifier is invalid");
-        mod_key_high =
-     * CLib::INVALID_KEY;
-    }*/
-
     // Load settings
     FileName = fileName;
     logger::info("Loaded settings");
