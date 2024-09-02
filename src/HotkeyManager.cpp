@@ -54,7 +54,8 @@ namespace
                     if (hotkey_mid.IsActive()) {
                         for (std::size_t i = 0; i < keySpellCombo.size(); ++i) {
                             if (player->HasSpell(keySpellCombo[i].second)) {
-                                player->RemoveSpell(keySpellCombo[i].second); // needed because the spell is the condition for applying the other spell. does not work without the spell condition
+                                player->RemoveSpell(
+                                    keySpellCombo[i].second); // needed because the spell is the condition for applying the other spell. does not work without the spell condition
                                 input->ApplyStance(keySpellCombo[(i + 1) % keySpellCombo.size()].second); // Activate the next stance in cycle
                                 logger::debug("Exiting loop after stance application (cycle mode)");
                                 break;
