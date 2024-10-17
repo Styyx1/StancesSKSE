@@ -4,7 +4,6 @@
 
 namespace
 {
-
     class HotkeyContext
     {
     public:
@@ -35,10 +34,13 @@ namespace
             }
         }
 
+        
+
         void Finalize(EventManager* input)
         {
             auto settings = Settings::GetSingleton();
-            auto player   = Cache::GetPlayerSingleton();
+            RE::PlayerCharacter* const player   = Cache::GetPlayerSingleton();
+            RE::UI* ui = RE::UI::GetSingleton();
 
             // vector with key-stance pairs for easy access in the cycle function and in the regular function
             std::vector<std::pair<CLib::KeyCombo, RE::SpellItem*>> keySpellCombo = {
@@ -50,8 +52,12 @@ namespace
             for (std::uint32_t count = 2; count > 0; --count) {
                 bool done = false;
                 if (settings->useCycle) {
+                    if (player && player->Is3DLoaded() && !EventManager::HasAnyStance()) {
+                        input->ApplyStance(settings->MidStanceSpell);
+                        logger::debug("applied default stance on key lookup");                                              
+                    }
                     // Handle cycle mode
-                    if (hotkey_mid.IsActive()) {
+                    if (hotkey_mid.IsActive() && !input->IsInMenu(settings, ui)) {
                         for (std::size_t i = 0; i < keySpellCombo.size(); ++i) {
                             if (player->HasSpell(keySpellCombo[i].second)) {
                                 player->RemoveSpell(
@@ -64,9 +70,17 @@ namespace
                     }
                 }
                 else {
+                    if (player && player->Is3DLoaded() && EventManager::HasAnyStance() == false) {
+                        HotkeyManager::once = true;
+                        input->ApplyStance(settings->MidStanceSpell);
+                        if (HotkeyManager::once) {
+                            HotkeyManager::once = false;
+                            logger::debug("applied default stance on key lookup regular mode");
+                        }                        
+                    }
                     // Vector
                     for (auto& i : keySpellCombo) {
-                        if (i.first.Count() == count && i.first.IsActive()) {
+                        if (i.first.Count() == count && i.first.IsActive() && !input->IsInMenu(settings, ui)) {
                             input->ApplyStance(i.second);
                             logger::debug("Exiting loop after stance application (regular mode)");
                             done = true;
@@ -79,7 +93,6 @@ namespace
                     break;
             }
         }
-
     private:
         CLib::KeyCombo hotkey_high;
         CLib::KeyCombo hotkey_mid;
@@ -88,7 +101,6 @@ namespace
 } // namespace
 
 void HotkeyManager::Process(const RE::InputEvent* const* a_event)
-
 {
     const auto settings = Settings::GetSingleton();
 

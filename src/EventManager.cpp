@@ -65,3 +65,18 @@ void EventManager::RemoveSpells(RE::SpellItem* a_newStance)
         player->RemoveSpell(settings->LowStanceSpell);
     }
 }
+
+bool EventManager::IsAnyOfMenuOpen(RE::UI* a_ui, const std::vector<std::string>& a_menuNames)
+{
+    for (std::string_view menuName : a_menuNames) {
+        if (a_ui->IsMenuOpen(menuName)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool EventManager::IsInMenu(const Settings* a_config, RE::UI* a_ui)
+{
+    return IsAnyOfMenuOpen(a_ui, a_config->sl1MenuNames);
+}
