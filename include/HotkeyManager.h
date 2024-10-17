@@ -6,10 +6,6 @@
 class HotkeyManager
 {
 public:
-    static void Process(const RE::InputEvent* const* a_event);
+    static void        Process(const RE::InputEvent* const* a_event);
     inline static bool once;
-
-    
-
-
 };

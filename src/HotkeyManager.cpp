@@ -34,13 +34,11 @@ namespace
             }
         }
 
-        
-
         void Finalize(EventManager* input)
         {
-            auto settings = Settings::GetSingleton();
+            auto                       settings = Settings::GetSingleton();
             RE::PlayerCharacter* const player   = Cache::GetPlayerSingleton();
-            RE::UI* ui = RE::UI::GetSingleton();
+            RE::UI*                    ui       = RE::UI::GetSingleton();
 
             // vector with key-stance pairs for easy access in the cycle function and in the regular function
             std::vector<std::pair<CLib::KeyCombo, RE::SpellItem*>> keySpellCombo = {
@@ -54,7 +52,7 @@ namespace
                 if (settings->useCycle) {
                     if (player && player->Is3DLoaded() && !EventManager::HasAnyStance()) {
                         input->ApplyStance(settings->MidStanceSpell);
-                        logger::debug("applied default stance on key lookup");                                              
+                        logger::debug("applied default stance on key lookup");
                     }
                     // Handle cycle mode
                     if (hotkey_mid.IsActive() && !input->IsInMenu(settings, ui)) {
@@ -76,7 +74,7 @@ namespace
                         if (HotkeyManager::once) {
                             HotkeyManager::once = false;
                             logger::debug("applied default stance on key lookup regular mode");
-                        }                        
+                        }
                     }
                     // Vector
                     for (auto& i : keySpellCombo) {
@@ -93,6 +91,7 @@ namespace
                     break;
             }
         }
+
     private:
         CLib::KeyCombo hotkey_high;
         CLib::KeyCombo hotkey_mid;

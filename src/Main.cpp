@@ -11,7 +11,7 @@ void Listener(SKSE::MessagingInterface::Message* message) noexcept
         auto settings = Settings::GetSingleton();
         settings->LoadSettings();
         settings->LoadForms();
-        //MenuEvent::Register();
+        // MenuEvent::Register();
         InputEventSink::Register();
     }
 }
