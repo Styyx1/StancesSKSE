@@ -10,7 +10,8 @@ namespace
         inline static bool isDisabled{ false };
 
         explicit HotkeyContext(const Settings* settings)
-            : hotkey_high(settings->high_key, settings->mod_key_high), hotkey_mid(settings->mid_key, settings->mod_key_mid), hotkey_low(settings->low_key, settings->mod_key_low), hotkey_neutral(settings->neutral_stance_key, settings->neutral_stance_modifier)
+            : hotkey_high(settings->high_key, settings->mod_key_high), hotkey_mid(settings->mid_key, settings->mod_key_mid), hotkey_low(settings->low_key, settings->mod_key_low),
+              hotkey_neutral(settings->neutral_stance_key, settings->neutral_stance_modifier)
         {
         }
 
@@ -37,12 +38,12 @@ namespace
         }
 
         void Finalize(EventManager* input)
-        {            
-            auto                       settings = Settings::GetSingleton();
-            RE::PlayerCharacter* const player   = Cache::GetPlayerSingleton();
-            RE::UI*                    ui       = RE::UI::GetSingleton();
-            std::atomic<bool> inprogress = false;
-            std::shared_mutex working;
+        {
+            auto                       settings   = Settings::GetSingleton();
+            RE::PlayerCharacter* const player     = Cache::GetPlayerSingleton();
+            RE::UI*                    ui         = RE::UI::GetSingleton();
+            std::atomic<bool>          inprogress = false;
+            std::shared_mutex          working;
             // vector with key-stance pairs for easy access in the cycle function and in the regular function
             std::vector<std::pair<CLib::KeyCombo, RE::SpellItem*>> keySpellCombo = {
                 { hotkey_low,  settings->LowStanceSpell},
@@ -50,8 +51,7 @@ namespace
                 {hotkey_high, settings->HighStanceSpell}
             };
 
-            if (hotkey_neutral.IsActive() && !input->IsInMenu(settings, ui))
-            {
+            if (hotkey_neutral.IsActive() && !input->IsInMenu(settings, ui)) {
                 player->RemoveSpell(settings->HighStanceSpell);
                 player->RemoveSpell(settings->MidStanceSpell);
                 player->RemoveSpell(settings->LowStanceSpell);
@@ -66,7 +66,8 @@ namespace
                         for (std::size_t i = 0; i < keySpellCombo.size(); ++i) {
                             if (player->HasSpell(keySpellCombo[i].second)) {
                                 inprogress = true;
-                                player->RemoveSpell(keySpellCombo[i].second); // needed because the spell is the condition for applying the other spell. does not work without the spell condition
+                                player->RemoveSpell(
+                                    keySpellCombo[i].second); // needed because the spell is the condition for applying the other spell. does not work without the spell condition
                                 input->ApplyStance(keySpellCombo[(i + 1) % keySpellCombo.size()].second); // Activate the next stance in cycle
                                 logger::debug("Exiting loop after stance application (cycle mode)");
                                 inprogress = false;

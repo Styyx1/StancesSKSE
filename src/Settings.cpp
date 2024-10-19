@@ -13,13 +13,13 @@ void Settings::LoadSettings() noexcept
     std::string mid_stance_spell_ID(ini.GetValue("FormID", "MidStanceSpellFormID", ""));
     std::string low_stance_spell_ID(ini.GetValue("FormID", "LowStanceSpellFormID", ""));
 
-    high_key     = std::stoi(ini.GetValue("Keys", "iHighStanceKey", "257"));
-    mid_key      = std::stoi(ini.GetValue("Keys", "iMidStanceKey", "258"));
-    low_key      = std::stoi(ini.GetValue("Keys", "iLowStanceKey", "259"));
-    mod_key_high = std::stoi(ini.GetValue("Keys", "iModifierKeyHighStance", "260"));
-    mod_key_mid  = std::stoi(ini.GetValue("Keys", "iModifierKeyMidStance", "260"));
-    mod_key_low  = std::stoi(ini.GetValue("Keys", "iModifierKeyLowStance", "260"));
-    neutral_stance_key = std::stoi(ini.GetValue("Keys", "iNeutralStanceKey", "256"));
+    high_key                = std::stoi(ini.GetValue("Keys", "iHighStanceKey", "257"));
+    mid_key                 = std::stoi(ini.GetValue("Keys", "iMidStanceKey", "258"));
+    low_key                 = std::stoi(ini.GetValue("Keys", "iLowStanceKey", "259"));
+    mod_key_high            = std::stoi(ini.GetValue("Keys", "iModifierKeyHighStance", "260"));
+    mod_key_mid             = std::stoi(ini.GetValue("Keys", "iModifierKeyMidStance", "260"));
+    mod_key_low             = std::stoi(ini.GetValue("Keys", "iModifierKeyLowStance", "260"));
+    neutral_stance_key      = std::stoi(ini.GetValue("Keys", "iNeutralStanceKey", "256"));
     neutral_stance_modifier = std::stoi(ini.GetValue("Keys", "iModifierNeutralStance", "260"));
 
     useCycle      = ini.GetBoolValue("Keys", "bUseCycling");
