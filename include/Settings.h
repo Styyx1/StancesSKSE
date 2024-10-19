@@ -15,6 +15,8 @@ public:
     inline static uint32_t mod_key_mid;
     inline static uint32_t mod_key_low;
     inline static uint32_t cycleKey;
+    inline static uint32_t neutral_stance_modifier;
+    inline static uint32_t neutral_stance_key;
 
     RE::FormID HighStanceSpellFormID;
     RE::FormID MidStanceSpellFormID;

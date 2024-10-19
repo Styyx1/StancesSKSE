@@ -19,6 +19,8 @@ void Settings::LoadSettings() noexcept
     mod_key_high = std::stoi(ini.GetValue("Keys", "iModifierKeyHighStance", "260"));
     mod_key_mid  = std::stoi(ini.GetValue("Keys", "iModifierKeyMidStance", "260"));
     mod_key_low  = std::stoi(ini.GetValue("Keys", "iModifierKeyLowStance", "260"));
+    neutral_stance_key = std::stoi(ini.GetValue("Keys", "iNeutralStanceKey", "256"));
+    neutral_stance_modifier = std::stoi(ini.GetValue("Keys", "iModifierNeutralStance", "260"));
 
     useCycle      = ini.GetBoolValue("Keys", "bUseCycling");
     debug_logging = ini.GetBoolValue("Log", "Debug");
