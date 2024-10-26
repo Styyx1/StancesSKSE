@@ -14,6 +14,7 @@ namespace
               hotkey_neutral(settings->neutral_stance_key, settings->neutral_stance_modifier)
         {
         }
+
         void Update(const RE::ButtonEvent* a_button)
         {
             if (!a_button->HasIDCode()) {
@@ -34,6 +35,7 @@ namespace
                 }
             }
         }
+
         void Finalize(EventManager* input)
         {
             auto                       settings   = Settings::GetSingleton();
@@ -96,6 +98,7 @@ namespace
                     break;
             }
         }
+
     private:
         CLib::KeyCombo hotkey_high;
         CLib::KeyCombo hotkey_mid;
