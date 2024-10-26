@@ -14,13 +14,11 @@ namespace
               hotkey_neutral(settings->neutral_stance_key, settings->neutral_stance_modifier)
         {
         }
-
         void Update(const RE::ButtonEvent* a_button)
         {
             if (!a_button->HasIDCode()) {
                 return;
             }
-
             if (a_button->IsPressed()) {
                 auto key = CLib::ParseKey(a_button->GetIDCode(), a_button->GetDevice());
                 hotkey_low.UpdatePressed(key);
@@ -36,7 +34,6 @@ namespace
                 }
             }
         }
-
         void Finalize(EventManager* input)
         {
             auto                       settings   = Settings::GetSingleton();
@@ -50,14 +47,12 @@ namespace
                 { hotkey_mid,  settings->MidStanceSpell},
                 {hotkey_high, settings->HighStanceSpell}
             };
-
             if (hotkey_neutral.IsActive() && !input->IsInMenu(settings, ui)) {
                 player->RemoveSpell(settings->HighStanceSpell);
                 player->RemoveSpell(settings->MidStanceSpell);
                 player->RemoveSpell(settings->LowStanceSpell);
                 logger::debug("neutral stance active, no stance applied");
             }
-
             for (std::uint32_t count = 2; count > 0; --count) {
                 bool done = false;
                 if (settings->useCycle) {
@@ -83,6 +78,10 @@ namespace
                 }
                 else {
                     // Vector
+                    if (!EventManager::HasAnyStance() && settings->neutral_stance_key == 0) {
+                        logger::debug("neutral stance disabled, apply default stance");
+                        input->ApplyStance(settings->MidStanceSpell);
+                    }
                     for (auto& i : keySpellCombo) {
                         if (i.first.Count() == count && i.first.IsActive() && !input->IsInMenu(settings, ui)) {
                             input->ApplyStance(i.second);
@@ -97,7 +96,6 @@ namespace
                     break;
             }
         }
-
     private:
         CLib::KeyCombo hotkey_high;
         CLib::KeyCombo hotkey_mid;
@@ -117,7 +115,6 @@ void HotkeyManager::Process(const RE::InputEvent* const* a_event)
             ctx.Update(button);
         }
     }
-
     auto input = EventManager::GetSingleton();
 
     ctx.Finalize(input);
