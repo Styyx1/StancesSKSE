@@ -65,7 +65,8 @@ namespace
                                 if (player->HasSpell(keySpellCombo[i].second)) {
                                     inprogress = true;
                                     player->RemoveSpell(
-                                        keySpellCombo[i].second); // needed because the spell is the condition for applying the other spell. does not work without the spell condition
+                                        keySpellCombo[i]
+                                            .second); // needed because the spell is the condition for applying the other spell. does not work without the spell condition
                                     input->ApplyStance(keySpellCombo[(i + 1) % keySpellCombo.size()].second); // Activate the next stance in cycle
                                     logger::debug("Exiting loop after stance application (cycle mode)");
                                     inprogress = false;
@@ -99,7 +100,6 @@ namespace
                         break;
                 }
             }
-            
         }
 
     private:
