@@ -55,48 +55,51 @@ namespace
                 player->RemoveSpell(settings->LowStanceSpell);
                 logger::debug("neutral stance active, no stance applied");
             }
-            for (std::uint32_t count = 2; count > 0; --count) {
-                bool done = false;
-                if (settings->useCycle) {
-                    // Handle cycle mode
-                    if (hotkey_mid.IsActive() && !input->IsInMenu(settings, ui)) {
-                        for (std::size_t i = 0; i < keySpellCombo.size(); ++i) {
-                            if (player->HasSpell(keySpellCombo[i].second)) {
-                                inprogress = true;
-                                player->RemoveSpell(
-                                    keySpellCombo[i].second); // needed because the spell is the condition for applying the other spell. does not work without the spell condition
-                                input->ApplyStance(keySpellCombo[(i + 1) % keySpellCombo.size()].second); // Activate the next stance in cycle
-                                logger::debug("Exiting loop after stance application (cycle mode)");
-                                inprogress = false;
-                                break;
+            if (player->Is3DLoaded()) {
+                for (std::uint32_t count = 2; count > 0; --count) {
+                    bool done = false;
+                    if (settings->useCycle) {
+                        // Handle cycle mode
+                        if (hotkey_mid.IsActive() && !input->IsInMenu(settings, ui)) {
+                            for (std::size_t i = 0; i < keySpellCombo.size(); ++i) {
+                                if (player->HasSpell(keySpellCombo[i].second)) {
+                                    inprogress = true;
+                                    player->RemoveSpell(
+                                        keySpellCombo[i].second); // needed because the spell is the condition for applying the other spell. does not work without the spell condition
+                                    input->ApplyStance(keySpellCombo[(i + 1) % keySpellCombo.size()].second); // Activate the next stance in cycle
+                                    logger::debug("Exiting loop after stance application (cycle mode)");
+                                    inprogress = false;
+                                    break;
+                                }
+                                else if (!EventManager::HasAnyStance() && settings->neutral_stance_key == 0 && !inprogress) {
+                                    input->ApplyStance(keySpellCombo[1].second);
+                                    logger::debug("no stance prior detected. Applied {}", keySpellCombo[1].second->GetName());
+                                    break;
+                                }
                             }
-                            else if (!EventManager::HasAnyStance() && !inprogress) {
-                                input->ApplyStance(keySpellCombo[1].second);
-                                logger::debug("no stance prior detected. Applied {}", keySpellCombo[1].second->GetName());
+                        }
+                    }
+                    else {
+                        // Vector
+                        if (!EventManager::HasAnyStance() && settings->neutral_stance_key == 0) {
+                            logger::debug("neutral stance disabled, apply default stance");
+                            input->ApplyStance(settings->MidStanceSpell);
+                        }
+                        for (auto& i : keySpellCombo) {
+                            if (i.first.Count() == count && i.first.IsActive() && !input->IsInMenu(settings, ui)) {
+                                input->ApplyStance(i.second);
+                                logger::debug("Exiting loop after stance application (regular mode)");
+                                done = true;
                                 break;
                             }
                         }
                     }
+                    // needed to break out of the for loop and wait for the next key (i think). not sure but needed anyway.
+                    if (done)
+                        break;
                 }
-                else {
-                    // Vector
-                    if (!EventManager::HasAnyStance() && settings->neutral_stance_key == 0) {
-                        logger::debug("neutral stance disabled, apply default stance");
-                        input->ApplyStance(settings->MidStanceSpell);
-                    }
-                    for (auto& i : keySpellCombo) {
-                        if (i.first.Count() == count && i.first.IsActive() && !input->IsInMenu(settings, ui)) {
-                            input->ApplyStance(i.second);
-                            logger::debug("Exiting loop after stance application (regular mode)");
-                            done = true;
-                            break;
-                        }
-                    }
-                }
-                // needed to break out of the for loop and wait for the next key (i think). not sure but needed anyway.
-                if (done)
-                    break;
             }
+            
         }
 
     private:

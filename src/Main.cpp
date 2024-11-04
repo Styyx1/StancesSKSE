@@ -14,6 +14,23 @@ void Listener(SKSE::MessagingInterface::Message* message) noexcept
         // MenuEvent::Register();
         InputEventSink::Register();
     }
+    if (message->type == SKSE::MessagingInterface::kNewGame) {
+        if(!EventManager::HasAnyStance()){
+            if (Settings::neutral_stance_key == 0) {
+                Settings* settings = Settings::GetSingleton();
+                EventManager::ApplyStance(settings->MidStanceSpell);
+            }            
+        }
+    }
+    if (message->type == SKSE::MessagingInterface::kPostLoadGame) {
+        if(!EventManager::HasAnyStance()){
+            if (Settings::neutral_stance_key == 0) {
+                Settings* settings = Settings::GetSingleton();
+                EventManager::ApplyStance(settings->MidStanceSpell);
+            }            
+        }
+    }
+
 }
 
 SKSEPluginLoad(const SKSE::LoadInterface* skse)
