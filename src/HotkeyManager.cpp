@@ -64,9 +64,7 @@ namespace
                             for (std::size_t i = 0; i < keySpellCombo.size(); ++i) {
                                 if (player->HasSpell(keySpellCombo[i].second)) {
                                     inprogress = true;
-                                    player->RemoveSpell(
-                                        keySpellCombo[i]
-                                            .second); // needed because the spell is the condition for applying the other spell. does not work without the spell condition
+                                    player->RemoveSpell(keySpellCombo[i].second); // needed because the spell is the condition for applying the other spell. does not work without the spell condition
                                     input->ApplyStance(keySpellCombo[(i + 1) % keySpellCombo.size()].second); // Activate the next stance in cycle
                                     logger::debug("Exiting loop after stance application (cycle mode)");
                                     inprogress = false;
@@ -81,11 +79,7 @@ namespace
                         }
                     }
                     else {
-                        // Vector
-                        if (!EventManager::HasAnyStance() && settings->neutral_stance_key == 0) {
-                            logger::debug("neutral stance disabled, apply default stance");
-                            input->ApplyStance(settings->MidStanceSpell);
-                        }
+                        // Vector                       
                         for (auto& i : keySpellCombo) {
                             if (i.first.Count() == count && i.first.IsActive() && !input->IsInMenu(settings, ui)) {
                                 input->ApplyStance(i.second);
