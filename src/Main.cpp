@@ -4,6 +4,7 @@
 #include "Logging.h"
 #include "SKSE/Interfaces.h"
 #include "Settings.h"
+#include "MenuEventManager.h"
 
 void Listener(SKSE::MessagingInterface::Message* message) noexcept
 {
@@ -13,6 +14,7 @@ void Listener(SKSE::MessagingInterface::Message* message) noexcept
         settings->LoadForms();
         // MenuEvent::Register();
         InputEventSink::Register();
+        MenuEvent::Register();
     }
     if (message->type == SKSE::MessagingInterface::kNewGame) {
         if (!EventManager::HasAnyStance()) {

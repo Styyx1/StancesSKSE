@@ -70,7 +70,7 @@ namespace
                                     inprogress = false;
                                     break;
                                 }
-                                else if (!EventManager::HasAnyStance() && settings->neutral_stance_key == 0 && !inprogress) {
+                                if (!EventManager::HasAnyStance() && !inprogress) {
                                     input->ApplyStance(keySpellCombo[1].second);
                                     logger::debug("no stance prior detected. Applied {}", keySpellCombo[1].second->GetName());
                                     break;
