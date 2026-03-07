@@ -1,45 +1,34 @@
 #pragma once
-#include "EventManager.h"
+#include "stance-manager.h"
 
-class MenuEvent final : public Singleton<MenuEvent>, public RE::BSTEventSink<RE::MenuOpenCloseEvent>
+using Event       = const RE::MenuOpenCloseEvent*;
+using EventSource = RE::BSTEventSource<RE::MenuOpenCloseEvent>*;
+using EventRes = RE::BSEventNotifyControl;
+
+struct MenuEvent : REX::Singleton<MenuEvent>, RE::BSTEventSink<RE::MenuOpenCloseEvent>
 {
-    friend class Singleton<MenuEvent>;
-public:
-    using Event       = RE::MenuOpenCloseEvent*;
-    using EventSource = RE::BSTEventSource<Event>;
     static void Register();
-    RE::BSEventNotifyControl ProcessEvent(const RE::MenuOpenCloseEvent* event, RE::BSTEventSource<RE::MenuOpenCloseEvent>* a_eventSource) override;
-private:
-    MenuEvent() = default;
+    EventRes ProcessEvent(Event a_event, [[maybe_unused]] EventSource a_src) override;
 };
 
-RE::BSEventNotifyControl MenuEvent::ProcessEvent(const RE::MenuOpenCloseEvent* event, [[maybe_unused]] RE::BSTEventSource<RE::MenuOpenCloseEvent>* a_eventSource)
+inline EventRes MenuEvent::ProcessEvent(Event a_event, [[maybe_unused]] EventSource a_src)
 {
-    auto settings = Settings::GetSingleton();
-    if (!event)
-        return RE::BSEventNotifyControl::kContinue;
-    if (event->menuName != RE::RaceSexMenu::MENU_NAME)
-        return RE::BSEventNotifyControl::kContinue;
-    if (event->menuName == RE::RaceSexMenu::MENU_NAME) {
-        if (event->opening) {
-            logger::debug("OPEN MENU {}", event->menuName);
-            return RE::BSEventNotifyControl::kContinue;
-        }
-        else {
-            logger::debug("CLOSE MENU {}", event->menuName);
-            if (!EventManager::HasAnyStance() && Settings::neutral_stance_key == 0)
-                EventManager::ApplyStance(settings->MidStanceSpell);
-            logger::debug("applied {} after {} closed", settings->MidStanceSpell->GetName(), event->menuName);
-            return RE::BSEventNotifyControl::kContinue;
-        }
-    }
-    return RE::BSEventNotifyControl::kContinue;
+    if (!a_event)
+        return EventRes::kContinue;
+    if (a_event->menuName != RE::RaceSexMenu::MENU_NAME)
+        return EventRes::kContinue;
+    if (a_event->opening)
+        return EventRes::kContinue;
+
+    STNG::StanceManager::GetSingleton()->ApplyDefaultStance();
+    return EventRes::kContinue;
 }
-void MenuEvent::Register()
+
+inline void MenuEvent::Register()
 {
-    if (auto* eventSink = MenuEvent::GetSingleton()) {
+    if (auto* eventSink = GetSingleton()) {
         RE::UI::GetSingleton()->AddEventSink(eventSink);
-        logger::info("Registered for Menu Event");
+        logs::info("Registered for Menu Event");
     }
     else {
         SKSE::log::error("Failed to register menu event.");
