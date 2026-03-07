@@ -1,41 +1,29 @@
 #pragma once
+#include "mod-data.h"
 
-class Settings : public Singleton<Settings>
+namespace Config
 {
-public:
-    void LoadSettings() noexcept;
+    struct Settings
+    {
+        static inline REX::TOML::Str bear_stance_key{STNG::KEYBINDS, "sBearStanceKey", "shift+x"};
+        static inline REX::TOML::Str wolf_stance_key{STNG::KEYBINDS, "sWolfStanceKey", "x"};
+        static inline REX::TOML::Str hawk_stance_key{STNG::KEYBINDS, "sHawkStanceKey", "control+x"};
+        static inline REX::TOML::Str neutral_stance_key{STNG::KEYBINDS, "sNeutralStanceKey", "alt+v"};
 
-    void LoadForms() noexcept;
+        static inline REX::TOML::Bool use_cycling {STNG::GENERAL, "bUseCycling", false};
+        static inline REX::TOML::Bool apply_stance_on_start{STNG::GENERAL, "bApplyStanceOnStart", false};
+        static inline REX::TOML::Bool play_transition_animation{STNG::GENERAL, "bPlayTransitionAnimation", false};
+        static inline REX::TOML::Str transition_animation_form{STNG::FORMS, "sTransitionAnimationForm", ""};
 
-    std::string            FileName;
-    inline static uint32_t high_key;
-    inline static uint32_t mid_key;
-    inline static uint32_t low_key;
-    inline static uint32_t mod_key_high;
-    inline static uint32_t mod_key_mid;
-    inline static uint32_t mod_key_low;
-    inline static uint32_t cycleKey;
-    inline static uint32_t neutral_stance_modifier;
-    inline static uint32_t neutral_stance_key;
-
-    RE::FormID HighStanceSpellFormID;
-    RE::FormID MidStanceSpellFormID;
-    RE::FormID LowStanceSpellFormID;
-
-    RE::SpellItem* HighStanceSpell;
-    RE::SpellItem* MidStanceSpell;
-    RE::SpellItem* LowStanceSpell;
-
-    static RE::FormID  ParseFormID(const std::string& str);
-    inline static bool useCycle{};
-
-    inline static bool debug_logging{};
-
-    static constexpr std::array slMenuNames{
-        RE::BarterMenu::MENU_NAME,    RE::BookMenu::MENU_NAME,        RE::Console::MENU_NAME,      RE::ContainerMenu::MENU_NAME, RE::CraftingMenu::MENU_NAME,
-        RE::DialogueMenu::MENU_NAME,  RE::FavoritesMenu::MENU_NAME,   RE::GiftMenu::MENU_NAME,     RE::InventoryMenu::MENU_NAME, RE::JournalMenu::MENU_NAME,
-        RE::LevelUpMenu::MENU_NAME,   RE::LockpickingMenu::MENU_NAME, RE::MagicMenu::MENU_NAME,    RE::MapMenu::MENU_NAME,       RE::RaceSexMenu::MENU_NAME,
-        RE::SleepWaitMenu::MENU_NAME, RE::StatsMenu::MENU_NAME,       RE::TrainingMenu::MENU_NAME, RE::TutorialMenu::MENU_NAME,  RE::TweenMenu::MENU_NAME,
+        static void UpdateSettings(const bool a_save)
+        {
+            const auto toml = REX::TOML::SettingStore::GetSingleton();
+            toml->Init(STNG::TOML_PATH_MAIN, STNG::TOML_PATH_CUSTOM);
+            if (!a_save)
+                toml->Load();
+            else
+                toml->Save();
+        }
     };
-    std::vector<std::string> sl1MenuNames{ slMenuNames.begin(), slMenuNames.end() };
-};
+}
+

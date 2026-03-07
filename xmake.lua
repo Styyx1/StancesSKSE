@@ -6,7 +6,7 @@ includes("lib/commonlibsse-ng")
 
 -- set project
 set_project("StancesNG")
-set_version("1.2.5")
+set_version("2.0.0")
 set_license("GPL-3.0")
 
 -- set defaults
@@ -21,16 +21,13 @@ set_policy("package.requires_lock", true)
 add_rules("mode.debug", "mode.releasedbg")
 add_rules("plugin.vsxmake.autoupdate")
 
--- packages
-add_requires("simpleini")
-add_requires("spdlog", { configs = { header_only = false } })
-
+-- configs
+set_config("rex_toml", true)
 
 -- targets
 target("StancesNG")
     -- add dependencies to target
     add_deps("commonlibsse-ng")
-    add_packages("fmt", "spdlog", "simpleini")
 
     -- add commonlibsse-ng plugin
     add_rules("commonlibsse-ng.plugin", {
@@ -43,22 +40,5 @@ target("StancesNG")
     add_files("src/**.cpp")
     add_headerfiles("src/**.h")
     add_includedirs("src")
+    add_includedirs("extern/clib-util/include", { public = true })
     set_pcxxheader("src/pch.h")
-
-after_build(function(target)
-    local copy = function(env, ext)
-        for _, env in pairs(env:split(";")) do
-            if os.exists(env) then
-                local plugins = path.join(env, ext, "SKSE/Plugins")
-                os.mkdir(plugins)
-                os.trycp(target:targetfile(), plugins)
-                os.trycp(target:symbolfile(), plugins)
-            end
-        end
-    end
-    if os.getenv("XSE_TES5_MODS_PATH") then
-        copy(os.getenv("XSE_TES5_MODS_PATH"), target:name())
-    elseif os.getenv("XSE_TES5_GAME_PATH") then
-        copy(os.getenv("XSE_TES5_GAME_PATH"), "Data")
-    end
-end)
