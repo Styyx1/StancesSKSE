@@ -3,6 +3,7 @@ set_xmakever("2.8.2")
 
 -- includes
 includes("lib/commonlibsse-ng")
+includes("extern/clib-util")
 
 -- set project
 set_project("StancesNG")
@@ -28,7 +29,7 @@ set_config("rex_toml", true)
 target("StancesNG")
     -- add dependencies to target
     add_deps("commonlibsse-ng")
-
+    add_deps("clib-util")
     -- add commonlibsse-ng plugin
     add_rules("commonlibsse-ng.plugin", {
         name = "StancesNG",
