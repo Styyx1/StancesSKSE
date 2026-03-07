@@ -58,10 +58,10 @@ STNG::EventResult STNG::InputEventListener::ProcessEvent( RE::InputEvent* const*
     if (!a_event)
         return EventResult::kContinue;
 
-    hotkey_neutral.Process(a_event);
-    hotkey_wolf.Process(a_event);
-    hotkey_bear.Process(a_event);
-    hotkey_hawk.Process(a_event);
+    hotkey_neutral.Process(a_event, true);
+    hotkey_wolf.Process(a_event, true);
+    hotkey_bear.Process(a_event, true);
+    hotkey_hawk.Process(a_event, true);
 
     return EventResult::kContinue;
 }
