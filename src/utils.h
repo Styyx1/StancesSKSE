@@ -9,14 +9,14 @@ namespace STNG
 {
     namespace MISC
     {
-        static bool IsModLoaded(const std::string_view mod_name) {
+        inline bool IsModLoaded(const std::string_view mod_name) {
             const auto data_handler = RE::TESDataHandler::GetSingleton();
 
             if (const auto main_file = data_handler->LookupModByName(mod_name); !main_file || main_file->compileIndex == 0xFF)
                 return false;
             return true;
         }
-        static bool IsAnyMenuOpen()
+        inline bool IsAnyMenuOpen()
         {
             const auto ui = RE::UI::GetSingleton();
             for (auto& menu : DATA::sl1MenuNames)
@@ -29,7 +29,7 @@ namespace STNG
             return false;
         }
 
-        static RE::TESForm* GetFormFromString(const std::string& formIDstring)
+        inline RE::TESForm* GetFormFromString(const std::string& formIDstring)
         {
             if (formIDstring.empty()) {
                 return nullptr;
@@ -68,7 +68,7 @@ namespace STNG
 
     namespace MAGIC
     {
-        static bool IsPermanent(const RE::MagicItem *item)
+        inline bool IsPermanent(const RE::MagicItem *item)
         {
             switch (item->GetSpellType())
             {
@@ -81,7 +81,7 @@ namespace STNG
             }
         }
 
-        static void ApplySpell(RE::Actor *caster, RE::Actor *target, RE::SpellItem *spell)
+        inline void ApplySpell(RE::Actor *caster, RE::Actor *target, RE::SpellItem *spell)
         {
             if (IsPermanent(spell))
             {

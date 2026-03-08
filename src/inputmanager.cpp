@@ -3,6 +3,7 @@
 //
 
 #include "inputmanager.h"
+#include "Settings.h"
 
 void STNG::InputEventListener::RegisterInput()
 {
@@ -34,17 +35,17 @@ void STNG::InputEventListener::SetKeys()
     }
 }
 
-void STNG::InputEventListener::ProcessStanceKey(const KeyCombination* key)
+void STNG::InputEventListener::ProcessStanceKey(const clib_util::hotkeys::KeyCombination* key)
 {
     for(auto& [hotkey, stance] : GetSingleton()->keySpellCombo)
     {
-        if (GetSingleton()->hotkey_wolf.IsTriggered())
+        if (key == &GetSingleton()->hotkey_wolf && key->IsTriggered())
         {
             if (StanceManager::CycleStancesPlayer())
                 return;
         }
 
-        if (hotkey->IsTriggered())
+        if (key == hotkey && key->IsTriggered())
         {
             StanceManager::UpdateStancePlayer(stance);
             break;
