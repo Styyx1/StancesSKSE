@@ -17,19 +17,19 @@ namespace STNG
         };
 
         static void ApplyDefaultStance();
-        void UpdateStance(available_stances a_stance, RE::Actor* a_actor);
+        static void UpdateStance(available_stances a_stance, RE::Actor* a_actor);
         static void UpdateStancePlayer(available_stances a_stance);
-        [[nodiscard]] bool PlayerHasAnyStance() const;
+        [[nodiscard]] static bool PlayerHasAnyStance() ;
         static bool CycleStancesPlayer();
 
     private:
-        bool HasAnyOfStances(const RE::Actor* a_actor) const;
-        [[nodiscard]] RE::SpellItem* GetStanceSpell(available_stances a_stance) const;
-        void ApplyStance(available_stances a_stance, RE::Actor* a_actor) const;
-        void SetPreviousStance(available_stances a_stance) const;
-        void SetCurrentStance(available_stances a_stance) const;
-        void RemoveAllStances(RE::Actor* a_actor) const;
-        void PlayTransitionAnimation(RE::Actor* a_actor);
+        static bool HasAnyOfStances(const RE::Actor* a_actor);
+        [[nodiscard]] static RE::SpellItem* GetStanceSpell(available_stances a_stance) ;
+        static void ApplyStance(available_stances a_stance, RE::Actor* a_actor);
+        static void SetPreviousStance(available_stances a_stance) ;
+        static void SetCurrentStance(available_stances a_stance) ;
+        static void RemoveAllStances(RE::Actor* a_actor) ;
+        static void PlayTransitionAnimation(RE::Actor* a_actor);
     };
 
     struct StanceUtil

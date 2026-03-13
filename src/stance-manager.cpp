@@ -10,41 +10,39 @@
 
 namespace STNG
 {
-    void StanceManager::ApplyStance(available_stances a_stance, RE::Actor* a_actor) const
+    void StanceManager::ApplyStance(available_stances a_stance, RE::Actor* a_actor)
     {
         RemoveAllStances(a_actor);
         const auto spell = GetStanceSpell(a_stance);
         if (!spell)
         {
-            logs::info("no spell");
+            logs::debug("no spell");
             return;
         }
 
         if (!a_actor)
             return;
-        logs::info("selected spell is: {}", spell->GetName());
+        logs::debug("selected spell is: {}", spell->GetName());
         MAGIC::ApplySpell(a_actor, a_actor, spell);
     }
 
-    void StanceManager::SetPreviousStance(const available_stances a_stance) const
+    void StanceManager::SetPreviousStance(const available_stances a_stance)
     {
         FormLoader::previous_stance_global->value = static_cast<float>(std::to_underlying(a_stance));
     }
 
-    void StanceManager::SetCurrentStance(const available_stances a_stance) const
+    void StanceManager::SetCurrentStance(const available_stances a_stance)
     {
         FormLoader::current_stance_global->value = static_cast<float>(std::to_underlying(a_stance));
     }
 
-    void StanceManager::RemoveAllStances(RE::Actor* a_actor) const
+    void StanceManager::RemoveAllStances(RE::Actor* a_actor)
     {
         if (!a_actor)
             return;
         for (const auto& spell : FormLoader::stance_spells)
         {
-            if (!spell)
-                continue;
-            if (a_actor->HasSpell(spell))
+            if (spell && a_actor->HasSpell(spell))
                 a_actor->RemoveSpell(spell);
         }
     }
@@ -61,7 +59,7 @@ namespace STNG
         proc->PlayIdle(a_actor, FormLoader::transition_animation, nullptr);
     }
 
-    RE::SpellItem* StanceManager::GetStanceSpell(const available_stances a_stance) const
+    RE::SpellItem* StanceManager::GetStanceSpell(const available_stances a_stance)
     {
         switch (a_stance)
         {
@@ -98,36 +96,32 @@ namespace STNG
         if (!Config::Settings::apply_stance_on_start.GetValue())
             return;
         const auto player = Cache::GetPlayerSingleton();
-        const auto a_this = GetSingleton();
         if (!player)
             return;
-        if (a_this->HasAnyOfStances(player))
+        if (HasAnyOfStances(player))
             return;
-        a_this->ApplyStance(available_stances::kWolfStance, player);
+        ApplyStance(available_stances::kWolfStance, player);
     }
 
     void StanceManager::UpdateStance(available_stances a_stance, RE::Actor* a_actor)
     {
         const auto stance = static_cast<available_stances>(static_cast<int>(FormLoader::current_stance_global->value));
-        logs::info("last used stance was: {}, switching to: {}", StanceUtil::GetStanceString(stance), StanceUtil::GetStanceString(a_stance));
+        logs::debug("last used stance was: {}, switching to: {}", StanceUtil::GetStanceString(stance), StanceUtil::GetStanceString(a_stance));
         SetPreviousStance(stance);
         ApplyStance(a_stance, a_actor);
         SetCurrentStance(a_stance);
         PlayTransitionAnimation(a_actor);
     }
 
-    bool StanceManager::HasAnyOfStances(const RE::Actor* a_actor) const
+    bool StanceManager::HasAnyOfStances(const RE::Actor* a_actor)
     {
         if (!a_actor)
             return false;
-        for (const auto& spell : FormLoader::stance_spells)
+
+        return std::ranges::any_of(FormLoader::stance_spells, [a_actor](const auto& spell)
         {
-            if (a_actor->HasSpell(spell))
-            {
-                return true;
-            }
-        }
-        return false;
+            return a_actor->HasSpell(spell);
+        });
     }
 
     void StanceManager::UpdateStancePlayer(available_stances a_stance)
@@ -135,10 +129,10 @@ namespace STNG
         const auto player = Cache::GetPlayerSingleton();
         if (!player)
             return;
-        GetSingleton()->UpdateStance(a_stance, player);
+        UpdateStance(a_stance, player);
     }
 
-    bool StanceManager::PlayerHasAnyStance() const
+    bool StanceManager::PlayerHasAnyStance()
     {
         const auto player = Cache::GetPlayerSingleton();
         if (!player)

@@ -20,7 +20,7 @@ inline EventRes MenuEvent::ProcessEvent(Event a_event, [[maybe_unused]] EventSou
     if (a_event->opening)
         return EventRes::kContinue;
 
-    STNG::StanceManager::GetSingleton()->ApplyDefaultStance();
+    STNG::StanceManager::ApplyDefaultStance();
     return EventRes::kContinue;
 }
 

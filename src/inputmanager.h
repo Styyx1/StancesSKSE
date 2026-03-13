@@ -14,7 +14,7 @@ namespace STNG
     {
         static void RegisterInput();
         static void SetKeys();
-        static void ProcessStanceKey(const clib_util::hotkeys::KeyCombination* key);
+        static void ProcessStanceKey(const KeyCombination* key);
         KeyCombination hotkey_bear{ProcessStanceKey};
         KeyCombination hotkey_wolf{ProcessStanceKey};
         KeyCombination hotkey_hawk{ProcessStanceKey};
