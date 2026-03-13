@@ -24,7 +24,7 @@ sWolfStanceKey = "alt+f4"         # please don't
 
 > **Note:** Key order does not matter — `ctrl+shift+e` and `shift+ctrl+e` are equivalent.  
 > **Note:** Spaces around `+` are ignored — `ctrl + e` and `ctrl+e` are the same.  
-> **Note:** `W`, `A`, `S`, `D` are automatically ignored in combinations to prevent allow stance changes while moving. You can not assign any of them as stance key. Not even when used with a different key as combo key.
+> **Note:** `W`, `A`, `S`, `D` are automatically ignored in combinations to allow stance changes while moving. You can not assign any of them as stance key. Not even when used with a different key as combo key.
 
 ## Valid Keys
 
