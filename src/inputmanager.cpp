@@ -35,7 +35,7 @@ void STNG::InputEventListener::SetKeys()
     }
 }
 
-void STNG::InputEventListener::ProcessStanceKey(const clib_util::hotkeys::KeyCombination* key)
+void STNG::InputEventListener::ProcessStanceKey(const KeyCombination* key)
 {
     for(auto& [hotkey, stance] : GetSingleton()->keySpellCombo)
     {
