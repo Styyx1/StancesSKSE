@@ -11,7 +11,7 @@ void Listener(SKSE::MessagingInterface::Message* message) noexcept
     {
     case SKSE::MessagingInterface::kInputLoaded:
         STNG::InputEventListener::RegisterInput();
-        STNG::InputEventListener::GetSingleton()->SetKeys();
+        STNG::InputEventListener::SetKeys();
         break;
     case SKSE::MessagingInterface::kDataLoaded:
         STNG::FormLoader::LoadForms();
@@ -20,14 +20,12 @@ void Listener(SKSE::MessagingInterface::Message* message) noexcept
         Config::Settings::use_cycling.SetValue(true);
         Config::Settings::UpdateSettings(true);
 #endif
-
-
         break;
     case SKSE::MessagingInterface::kPostLoadGame:
-        STNG::StanceManager::GetSingleton()->ApplyDefaultStance();
+        STNG::StanceManager::ApplyDefaultStance();
         break;
     case SKSE::MessagingInterface::kNewGame:
-        STNG::StanceManager::GetSingleton()->ApplyDefaultStance();
+        STNG::StanceManager::ApplyDefaultStance();
         break;
     default:
         break;
